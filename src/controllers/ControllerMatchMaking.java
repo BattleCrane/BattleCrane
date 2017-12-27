@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * 3.) отрисовка графики;
  */
 
-public final class ControllerMatchMaking implements Initializable {
+public final class ControllerMatchMaking implements Initializable, Controller {
 
     @FXML
     private Text textCountDown;

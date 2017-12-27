@@ -67,7 +67,7 @@ public final class GenesisBuildingTests implements TestInitializer{
 
         logger.info(mutated.toString());
         logger.info(battleManager.getBattleField().toString());
-        assertEquals(new PolyPriorityUnit(600.0, new Point(14, 9), battleManager.getGenerator()),
+        assertEquals(new PolyPriorityUnit(720.0, new Point(14, 9), battleManager.getGenerator()),
                 mutated.getUnits().get(0));
     }
 

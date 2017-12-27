@@ -1,7 +1,10 @@
 package game.battleFields;
 
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import game.adjutants.*;
+import game.battleFields.module.BManagerModule;
 import game.players.Player;
 import game.unities.Unity;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +33,7 @@ import java.util.regex.Pattern;
 //Контроллер игры, делегат
 // TODO: 16.12.2017 make enum units & move methods callable from units, extending their from Unity
 public class BattleManager {
+    private final Injector injector = Guice.createInjector(new BManagerModule(this));
 
     //Основные переменные:
     private AdjutantWakeUpper adjutantWakeUpper = new AdjutantWakeUpper();

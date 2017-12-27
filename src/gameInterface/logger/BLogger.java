@@ -1,4 +1,4 @@
-package bInterface.bLogger;
+package gameInterface.logger;
 
 import java.util.MissingResourceException;
 import java.util.logging.Logger;

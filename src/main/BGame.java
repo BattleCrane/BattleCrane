@@ -1,13 +1,12 @@
 package main;
 
-import bInterface.bwindows.BWindow;
-import bInterface.bwindows.WINDOW;
+import gameInterface.sceneMover.BSceneMover;
+import gameInterface.windows.BWindow;
+import gameInterface.windows.WINDOW;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.Contract;
@@ -18,14 +17,16 @@ import java.util.function.Function;
 
 /**
  * Класс BGame является стартом приложения.
- * У него существует один статический экземпляр Stage, который не является аргументом метода start.
- * Но в реализации этого метода, BattleCraneStage ведет себя как аргумент,
- * а реальный объект на входе Stage unused игнорируется
+ * У него существует injector, который привязывает классы к переменным.
+ * В реализации метода start, stage ведет себя как аргумент,
+ * Реальный объект на входе Stage unused игнорируется.
  */
 
-// TODO: 16.12.2017 make this injectable & set maven project
 public final class BGame extends Application {
-    private final Injector injector = Guice.createInjector(new BGameGuiceModule(this));
+    private final String ICON_PATH = "file:src\\Resources\\Icon.png";
+    private final String TITLE = "BattleCrane";
+
+    private final Injector injector = Guice.createInjector(new BGameModule(this));
 
     private final Stage stage = new Stage();
 
@@ -39,39 +40,37 @@ public final class BGame extends Application {
         };
 
         windowMap = new EnumMap<WINDOW, BWindow>(WINDOW.class){{
-//            put(WINDOW.INITIALIZATION, new BWindow(makeFXMLLoader.apply(BGame.class.getResource(""))));
-//            put(WINDOW.MENU, new BWindow(makeFXMLLoader.apply(BGame.class.getResource(""))));
-//            put(WINDOW.AUTHORIZATION, new BWindow(makeFXMLLoader.apply(BGame.class.getResource(""))));
-//            put(WINDOW.PROFILE, new BWindow(makeFXMLLoader.apply(BGame.class.getResource(""))));
-//            put(WINDOW.MATCHMAKING, new BWindow(makeFXMLLoader.apply(BGame.class.getResource(""))));
+            put(WINDOW.MENU, new BWindow(makeFXMLLoader.apply(WINDOW.MENU.URL())));
+            put(WINDOW.MATCHMAKING, new BWindow(makeFXMLLoader.apply(WINDOW.MATCHMAKING.URL())));
         }};
     }
 
-
-    //Статическое окно, которое можно переключать
-    private static Stage BattleCraneStage = new Stage();
+    private final BSceneMover sceneMover = injector.getInstance(BSceneMover.class);
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage unused) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("../fxmlFiles/fxmlBattleFieldWindow.fxml"));
-        BattleCraneStage.getIcons().add(new Image("file:src\\Resources\\Icon.png"));
-        BattleCraneStage.setResizable(false);
-        BattleCraneStage.setTitle("BattleCrane");
-        BattleCraneStage.setScene(new Scene(root));
-        BattleCraneStage.show();
+    public final void start(Stage unused) throws Exception {
+        initialize();
+    }
+
+    private void initialize(){
+        stage.getIcons().add(new Image(ICON_PATH));
+        stage.setResizable(false);
+        stage.setTitle(TITLE);
+        sceneMover.moveToScene(WINDOW.MATCHMAKING);
+        stage.show();
     }
 
     @Contract(pure = true)
-    public Stage getStage() {
+    public final Stage getStage() {
         return stage;
     }
 
     @Contract(pure = true)
-    public EnumMap<WINDOW, BWindow> getMapOfWindows() {
+    public final EnumMap<WINDOW, BWindow> getWindowMap() {
         return windowMap;
     }
 }
